@@ -17,6 +17,15 @@ namespace TicketBookingCore
                 throw new ArgumentNullException(nameof(request));
             }
 
+            if (!IsValidEmail(request.Email))
+            {
+                return new TicketBookingResponse
+                {
+                    Success = false,
+                    ErrorMessage = "Invalid email address."
+                };
+            }
+
             _ticketBookingRepository.Save(Create<TicketBooking>(request));
 
             return Create<TicketBookingResponse>(request);
@@ -36,6 +45,19 @@ namespace TicketBookingCore
                 LastName = request.LastName,
                 Email = request.Email
             };
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

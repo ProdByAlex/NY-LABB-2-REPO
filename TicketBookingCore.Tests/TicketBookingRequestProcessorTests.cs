@@ -80,6 +80,25 @@ namespace TicketBookingCore.Tests
             Assert.Equal(_request.FirstName, savedTicketBooking.FirstName);
             Assert.Equal(_request.LastName, savedTicketBooking.LastName);
             Assert.Equal(_request.Email, savedTicketBooking.Email);
-        }   
+        }
+
+        [Fact]
+        public void ShouldReturnErrorForInvalidEmail()
+        {
+
+            var request = new TicketBookingRequest
+            {
+                FirstName = "Alex",
+                LastName = "Elias",
+                Email = "invalid-email" 
+            };
+
+            var processor = new TicketBookingRequestProcessor(_ticketBookingRepositoryMock.Object);
+
+            var response = processor.Book(request);
+
+            Assert.False(response.Success);
+            Assert.Equal("Invalid email address.", response.ErrorMessage);
+        }
     }
 }
